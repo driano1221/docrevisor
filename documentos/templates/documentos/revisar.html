@@ -1,0 +1,27 @@
+{% extends 'documentos/base.html' %}
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <h2 class="fw-bold mb-4">Revisão Humana: Documento #{{ doc.id }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                {% for field in form %}
+                <div class="col-md-6 mb-3">
+                    <label class="form-label {% if not field.value %}text-danger fw-bold{% endif %}">
+                        {{ field.label }} {% if not field.value %}(Não extraído){% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <hr class="my-4">
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success btn-lg flex-grow-1">APROVAR E SALVAR</button>
+                <a href="{% url 'historico' %}" class="btn btn-outline-secondary btn-lg">CANCELAR</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

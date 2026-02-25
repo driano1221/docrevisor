@@ -1,0 +1,9 @@
+Django>=5.0
+pytesseract
+Pillow
+pdfplumber
+google-generativeai
+WeasyPrint
+python-dotenv
+whitenoise
+gunicorn

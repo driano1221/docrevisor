@@ -1,0 +1,80 @@
+{% extends 'documentos/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm border-0">
+            <p class="text-muted mb-0">Documentos Processados</p>
+            <h2 class="fw-bold">{{ total_processado }}</h2>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm border-0">
+            <p class="text-muted mb-0">Valor Total Aprovado</p>
+            <h2 class="fw-bold text-success">R$ {{ valor_total|floatformat:2 }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-title mb-0">Seu Histórico</h4>
+            <a href="{% url 'exportar_csv' %}" class="btn btn-outline-primary btn-sm">Exportar CSV</a>
+        </div>
+        
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Arquivo</th>
+                    <th>Data Upload</th>
+                    <th>Status</th>
+                    <th>Valor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documentos %}
+                <tr>
+                    <td>{{ doc.arquivo.name|truncatechars:30 }}</td>
+                    <td>{{ doc.data_upload|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if doc.status == 'pendente' %}
+                            <span class="badge bg-secondary">Pendente</span>
+                        {% elif doc.status == 'aguardando_revisao' %}
+                            <span class="badge bg-warning text-dark">Aguardando Revisão</span>
+                        {% elif doc.status == 'aprovado' %}
+                            <span class="badge bg-success">Aprovado</span>
+                        {% elif doc.status == 'erro' %}
+                            <span class="badge bg-danger">Erro</span>
+                        {% else %}
+                            <span class="badge bg-info">Processando</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if doc.dados %}
+                            R$ {{ doc.dados.valor_total }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if doc.status == 'aguardando_revisao' %}
+                            <a href="{% url 'revisar_documento' doc.id %}" class="btn btn-primary btn-sm">Revisar</a>
+                        {% elif doc.status == 'aprovado' %}
+                            <a href="{% url 'gerar_pdf' doc.id %}" class="btn btn-outline-dark btn-sm">PDF</a>
+                        {% elif doc.status == 'erro' %}
+                            <button class="btn btn-outline-danger btn-sm" title="{{ doc.mensagem_erro }}">Ver Erro</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">Nenhum documento encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

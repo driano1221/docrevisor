@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .content { margin-top: 30px; }
+        .field { margin-bottom: 15px; }
+        .label { font-weight: bold; }
+        .footer { margin-top: 50px; font-size: 0.8rem; color: #777; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>DocRevisor - Comprovante de Revisão</h1>
+        <p>Documento ID: {{ doc.id }} | Data: {{ doc.data_upload|date:"d/m/Y" }}</p>
+    </div>
+    
+    <div class="content">
+        <h3>Dados da Nota Fiscal</h3>
+        <div class="field"><span class="label">Emitente:</span> {{ doc.dados.nome_emitente }}</div>
+        <div class="field"><span class="label">CNPJ Emitente:</span> {{ doc.dados.cnpj_emitente }}</div>
+        <div class="field"><span class="label">Chave NF-e:</span> {{ doc.dados.chave_acesso }}</div>
+        <div class="field"><span class="label">Número Nota:</span> {{ doc.dados.numero_nota }} / Série: {{ doc.dados.serie }}</div>
+        <div class="field"><span class="label">Valor Total:</span> R$ {{ doc.dados.valor_total }}</div>
+        <div class="field"><span class="label">Data Emissão:</span> {{ doc.dados.data_emissao|date:"d/m/Y" }}</div>
+        
+        <h3>Destinatário</h3>
+        <div class="field"><span class="label">Nome:</span> {{ doc.dados.nome_destinatario }}</div>
+        <div class="field"><span class="label">CNPJ:</span> {{ doc.dados.cnpj_destinatario }}</div>
+    </div>
+
+    <div class="footer">
+        Documento processado inteligencialmente pelo DocRevisor.
+    </div>
+</body>
+</html>
