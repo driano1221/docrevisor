@@ -64,7 +64,7 @@
                         {% elif doc.status == 'aprovado' %}
                             <a href="{% url 'gerar_pdf' doc.id %}" class="btn btn-outline-dark btn-sm">PDF</a>
                         {% elif doc.status == 'erro' %}
-                            <button class="btn btn-outline-danger btn-sm" title="{{ doc.mensagem_erro }}">Ver Erro</button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="alert('{{ doc.mensagem_erro }}')">Ver Erro</button>
                         {% endif %}
                     </td>
                 </tr>
