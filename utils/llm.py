@@ -1,15 +1,13 @@
-import google.generativeai as genai
 import json
 import os
 from dotenv import load_dotenv
+from google import genai
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def extrair_dados_com_gemini(texto_bruto):
-    model = genai.GenerativeModel('gemini-2.0-flash')
-    
     prompt = f"""
     Analise o texto de uma Nota Fiscal Eletrônica (NF-e) brasileira abaixo e extraia os campos em formato JSON.
     Responda APENAS o JSON, sem explicações, sem markdown.
@@ -31,10 +29,12 @@ def extrair_dados_com_gemini(texto_bruto):
     Texto:
     {texto_bruto}
     """
-    
+
     try:
-        response = model.generate_content(prompt)
-        # Limpa possíveis blocos de markdown se a IA ignorar o comando
+        response = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=prompt,
+        )
         clean_json = response.text.replace('```json', '').replace('```', '').strip()
         return json.loads(clean_json)
     except Exception as e:

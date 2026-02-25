@@ -19,25 +19,25 @@ class DadosExtraidosForm(forms.ModelForm):
                 self.fields[field].widget.attrs.update({'class': 'form-control'})
 
     def clean_cnpj_emitente(self):
-        cnpj = re.sub(r'\D', '', self.cleaned_data.get('cnpj_emitente'))
+        cnpj = re.sub(r'\D', '', self.cleaned_data.get('cnpj_emitente', '') or '')
         if cnpj and not validar_cnpj(cnpj):
             raise forms.ValidationError("CNPJ do Emitente inválido.")
         return cnpj
 
     def clean_cnpj_destinatario(self):
-        cnpj = re.sub(r'\D', '', self.cleaned_data.get('cnpj_destinatario'))
+        cnpj = re.sub(r'\D', '', self.cleaned_data.get('cnpj_destinatario', '') or '')
         if cnpj and not validar_cnpj(cnpj):
             raise forms.ValidationError("CNPJ do Destinatário inválido.")
         return cnpj
 
     def clean_chave_acesso(self):
-        chave = re.sub(r'\D', '', self.cleaned_data.get('chave_acesso'))
+        chave = re.sub(r'\D', '', self.cleaned_data.get('chave_acesso', '') or '')
         if chave and not validar_chave_nfe(chave):
             raise forms.ValidationError("Chave de acesso deve ter 44 dígitos.")
         return chave
 
     def clean_uf_emitente(self):
-        uf = self.cleaned_data.get('uf_emitente').upper()
+        uf = (self.cleaned_data.get('uf_emitente') or '').upper()
         if uf and uf not in UFS_VALIDAS:
             raise forms.ValidationError("UF inválida.")
         return uf
