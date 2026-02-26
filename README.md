@@ -1,6 +1,6 @@
 # DocRevisor: Human-in-the-Loop Document Processing
 
-O **DocRevisor** é uma aplicação web focada no processamento inteligente de documentos fiscais brasileiros. Utiliza visão computacional e IA (Google Gemini) para extrair dados brutos e oferece uma interface de revisão humana para garantir 100% de acurácia antes da aprovação final.
+O **DocRevisor** é uma aplicação web focada no processamento inteligente de documentos fiscais brasileiros. Utiliza visão computacional e IA (Google Gemini) para extrair dados brutos e oferece uma interface de revisão humana para garantir quase 100% de acurácia antes da aprovação final.
 
 ---
 
