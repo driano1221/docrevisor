@@ -32,7 +32,7 @@ def extrair_dados_com_gemini(texto_bruto):
 
     try:
         response = client.models.generate_content(
-            model='gemini-2.0-flash-lite',
+            model='gemini-2.5-flash',
             contents=prompt,
         )
         clean_json = response.text.replace('```json', '').replace('```', '').strip()
