@@ -1,37 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8"/>
     <style>
-        body { font-family: sans-serif; margin: 40px; }
-        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
-        .content { margin-top: 30px; }
-        .field { margin-bottom: 15px; }
-        .label { font-weight: bold; }
-        .footer { margin-top: 50px; font-size: 0.8rem; color: #777; }
+        @page { margin: 2cm; }
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 11pt; color: #222; }
+        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 12px; margin-bottom: 20px; }
+        .header h1 { font-size: 16pt; margin: 0 0 4px 0; }
+        .header p { margin: 2px 0; font-size: 9pt; color: #555; }
+        .section-title { font-size: 11pt; font-weight: bold; background: #f0f0f0;
+                         padding: 4px 8px; margin: 18px 0 8px 0; border-left: 4px solid #333; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 5px 8px; vertical-align: top; }
+        td.label { font-weight: bold; width: 42%; color: #444; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        .footer { margin-top: 40px; text-align: center; font-size: 8pt; color: #888;
+                  border-top: 1px solid #ccc; padding-top: 8px; }
+        .badge { background: #2e7d32; color: white; padding: 2px 10px; font-size: 9pt; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>DocRevisor - Comprovante de Revisão</h1>
-        <p>Documento ID: {{ doc.id }} | Data: {{ doc.data_upload|date:"d/m/Y" }}</p>
-    </div>
-    
-    <div class="content">
-        <h3>Dados da Nota Fiscal</h3>
-        <div class="field"><span class="label">Emitente:</span> {{ doc.dados.nome_emitente }}</div>
-        <div class="field"><span class="label">CNPJ Emitente:</span> {{ doc.dados.cnpj_emitente }}</div>
-        <div class="field"><span class="label">Chave NF-e:</span> {{ doc.dados.chave_acesso }}</div>
-        <div class="field"><span class="label">Número Nota:</span> {{ doc.dados.numero_nota }} / Série: {{ doc.dados.serie }}</div>
-        <div class="field"><span class="label">Valor Total:</span> R$ {{ doc.dados.valor_total }}</div>
-        <div class="field"><span class="label">Data Emissão:</span> {{ doc.dados.data_emissao|date:"d/m/Y" }}</div>
-        
-        <h3>Destinatário</h3>
-        <div class="field"><span class="label">Nome:</span> {{ doc.dados.nome_destinatario }}</div>
-        <div class="field"><span class="label">CNPJ:</span> {{ doc.dados.cnpj_destinatario }}</div>
+        <h1>DocRevisor - Comprovante de Revisao</h1>
+        <p>Documento ID: {{ doc.id }} | Data: {{ doc.data_upload|date:"d/m/Y H:i" }}</p>
+        <p>Revisado por: <strong>{{ doc.usuario.get_full_name|default:doc.usuario.username }}</strong>
+           &nbsp; <span class="badge">Aprovado</span></p>
     </div>
 
+    <div class="section-title">Emitente / Prestador</div>
+    <table>
+        <tr><td class="label">Nome / Razao Social</td><td>{{ doc.dados.nome_emitente|default:"-" }}</td></tr>
+        <tr><td class="label">CNPJ</td><td>{{ doc.dados.cnpj_emitente|default:"-" }}</td></tr>
+        <tr><td class="label">Municipio / UF</td>
+            <td>{{ doc.dados.municipio_emitente|default:"-" }}{% if doc.dados.uf_emitente %} / {{ doc.dados.uf_emitente }}{% endif %}</td></tr>
+    </table>
+
+    <div class="section-title">Dados da Nota Fiscal</div>
+    <table>
+        <tr><td class="label">Numero / Serie</td><td>{{ doc.dados.numero_nota|default:"-" }} / {{ doc.dados.serie|default:"-" }}</td></tr>
+        {% if doc.dados.cfop %}<tr><td class="label">CFOP</td><td>{{ doc.dados.cfop }}</td></tr>{% endif %}
+        <tr><td class="label">Data de Emissao</td><td>{{ doc.dados.data_emissao|date:"d/m/Y"|default:"-" }}</td></tr>
+        <tr><td class="label">Valor Total</td><td>R$ {{ doc.dados.valor_total }}</td></tr>
+        {% if doc.dados.chave_acesso %}
+        <tr><td class="label">Chave NF-e</td><td style="font-size:8pt; word-break:break-all;">{{ doc.dados.chave_acesso }}</td></tr>
+        {% endif %}
+    </table>
+
+    <div class="section-title">Destinatario / Tomador</div>
+    <table>
+        <tr><td class="label">Nome / Razao Social</td><td>{{ doc.dados.nome_destinatario|default:"-" }}</td></tr>
+        <tr><td class="label">CNPJ / CPF</td><td>{{ doc.dados.cnpj_destinatario|default:"-" }}</td></tr>
+    </table>
+
+    {% if doc.dados.descricao_servico %}
+    <div class="section-title">Descricao do Servico / Produto</div>
+    <table>
+        <tr><td>{{ doc.dados.descricao_servico }}</td></tr>
+    </table>
+    {% endif %}
+
     <div class="footer">
-        Documento processado inteligencialmente pelo DocRevisor.
+        Documento processado pelo DocRevisor | {{ doc.data_upload|date:"d/m/Y H:i" }}
     </div>
 </body>
 </html>
