@@ -3,7 +3,7 @@ pytesseract
 Pillow
 pdfplumber
 google-genai
-WeasyPrint
+xhtml2pdf
 python-dotenv
 whitenoise
 gunicorn
