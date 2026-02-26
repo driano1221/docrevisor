@@ -2,6 +2,12 @@ import pdfplumber
 import pytesseract
 from PIL import Image
 import io
+import os
+import sys
+
+# Caminho padrão do Tesseract no Windows
+if sys.platform == 'win32':
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def extrair_texto(caminho_arquivo):
     texto = ""
