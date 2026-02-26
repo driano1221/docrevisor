@@ -26,19 +26,19 @@ def upload_documento(request):
             if dados_json:
                 DadosExtraidos.objects.create(
                     documento=doc,
-                    chave_acesso=dados_json.get('chave_acesso', ''),
-                    numero_nota=dados_json.get('numero_nota', ''),
-                    serie=dados_json.get('serie', ''),
-                    cfop=dados_json.get('cfop', ''),
-                    data_emissao=dados_json.get('data_emissao'),
-                    valor_total=dados_json.get('valor_total', 0.0),
-                    nome_emitente=dados_json.get('nome_emitente', ''),
-                    cnpj_emitente=dados_json.get('cnpj_emitente', ''),
-                    municipio_emitente=dados_json.get('municipio_emitente', ''),
-                    uf_emitente=dados_json.get('uf_emitente', ''),
-                    nome_destinatario=dados_json.get('nome_destinatario', ''),
-                    cnpj_destinatario=dados_json.get('cnpj_destinatario', ''),
-                    descricao_servico=dados_json.get('descricao_servico', '')
+                    chave_acesso=dados_json.get('chave_acesso') or '',
+                    numero_nota=dados_json.get('numero_nota') or '',
+                    serie=dados_json.get('serie') or '',
+                    cfop=dados_json.get('cfop') or '',
+                    data_emissao=dados_json.get('data_emissao') or None,
+                    valor_total=dados_json.get('valor_total') or 0.0,
+                    nome_emitente=dados_json.get('nome_emitente') or '',
+                    cnpj_emitente=dados_json.get('cnpj_emitente') or '',
+                    municipio_emitente=dados_json.get('municipio_emitente') or '',
+                    uf_emitente=dados_json.get('uf_emitente') or '',
+                    nome_destinatario=dados_json.get('nome_destinatario') or '',
+                    cnpj_destinatario=dados_json.get('cnpj_destinatario') or '',
+                    descricao_servico=dados_json.get('descricao_servico') or ''
                 )
                 doc.status = 'aguardando_revisao'
                 doc.save()
