@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from .models import Documento, DadosExtraidos
 from .forms import DadosExtraidosForm
 from utils.ocr import extrair_texto
-from utils.llm import extrair_dados_com_gemini
+from utils.llm import extrair_dados_com_gemini, extrair_dados_com_gemini_visao
 import csv
 import json
 
@@ -20,8 +20,13 @@ def upload_documento(request):
         )
         
         try:
-            texto = extrair_texto(doc.arquivo.path)
-            dados_json = extrair_dados_com_gemini(texto)
+            caminho = doc.arquivo.path
+            extensao = caminho.lower()
+            if extensao.endswith(('.png', '.jpg', '.jpeg')):
+                dados_json = extrair_dados_com_gemini_visao(caminho)
+            else:
+                texto = extrair_texto(caminho)
+                dados_json = extrair_dados_com_gemini(texto)
             
             if dados_json:
                 DadosExtraidos.objects.create(
@@ -97,14 +102,16 @@ def gerar_pdf(request, doc_id):
     doc = get_object_or_404(Documento, id=doc_id, usuario=request.user, status='aprovado')
     
     try:
-        from weasyprint import HTML
+        from xhtml2pdf import pisa
+        from io import BytesIO
         html_string = render_to_string('documentos/pdf_template.html', {'doc': doc})
-        response = HttpResponse(content_type='application/pdf')
+        buffer = BytesIO()
+        pisa.CreatePDF(BytesIO(html_string.encode('utf-8')), dest=buffer)
+        response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="NF_Revisada_{doc.id}.pdf"'
-        HTML(string=html_string).write_pdf(response)
         return response
     except Exception as e:
-        messages.error(request, f"Erro ao gerar PDF: O servidor não possui as bibliotecas GTK instaladas. Erro: {e}")
+        messages.error(request, f"Erro ao gerar PDF: {e}")
         return redirect('historico')
 
 @login_required
